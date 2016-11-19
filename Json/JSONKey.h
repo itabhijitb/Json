@@ -45,7 +45,7 @@ public: //Constructors
 	JSONKey& JSONKey::operator[](size_t index);
 	JSONKey& operator=(const JSON& jv);
 public: //Public Methods
-	bool remove(std::string key);
+	std::size_t remove(std::string key);
 	bool remove(size_t index);
 	void insert(const std::initializer_list<std::pair<const std::string, JSON > > &  il);
 	void insert(const std::initializer_list<JSON > & il);
