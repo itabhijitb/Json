@@ -5,19 +5,21 @@
 *******************************************************************************/
 #include "JSONValue.h"
 
-class JSONNumber : public JSONValue
-{
-	typedef double VALUE_TYPE;
-public:
-	friend class JSON;
-	JSONNumber() {}
-	JSONNumber(double n);
-	JSONNumber(std::stringstream& strm);
-	bool operator == (const JSONValue& json);
-	std::stringstream& print(std::stringstream& ss, size_t depth);
-private:
-	JSONNumber& operator=(const JSONNumber&) = delete;
-private:
-	std::unique_ptr<VALUE_TYPE> m_value;
-};
+namespace JSON {
+	class Number : public Value
+	{
+		typedef double VALUE_TYPE;
+	public:
+		friend class JSON;
+		Number() {}
+		Number(double n);
+		Number(std::wstringstream& strm);
+		bool operator == (const Value& json);
+		std::wstringstream& print(std::wstringstream& ss, size_t depth);
+	private:
+		Number& operator=(const Number&) = delete;
+	private:
+		std::unique_ptr<VALUE_TYPE> m_value;
+	};
+}
 #endif

@@ -1,19 +1,19 @@
 #include "JSONArray.h"
-JSONArray::JSONArray()
+JSON::Array::Array()
 {
-	value_type = JSONValue::VALUE_TYPE::ARRAY;
+	value_type = Value::VALUE_TYPE::ARRAY;
 	m_value = std::unique_ptr<VALUE_TYPE>(new VALUE_TYPE());
 }
-JSONArray::JSONArray(std::stringstream& strm)
+JSON::Array::Array(std::wstringstream& strm)
 {
-	value_type = JSONValue::VALUE_TYPE::ARRAY;
+	value_type = Value::VALUE_TYPE::ARRAY;
 	m_value = std::unique_ptr<VALUE_TYPE>(new VALUE_TYPE());
 	strm >> std::ws;
-	char ch;
+	decltype(strm.peek()) ch{};
 	strm >> ch;
 	if (ch != starttoken)
 	{
-		throw JSONPgmErr("JSON Stream at %d is %c, %c expected.", strm.tellg(), ch, endtoken);
+		throw PgmErr(L"JSON Stream at %d is %c, %c expected.", strm.tellg(), ch, endtoken);
 	}
 
 	while ((ch = strm.peek()) != endtoken)
@@ -24,16 +24,16 @@ JSONArray::JSONArray(std::stringstream& strm)
 		strm >> ch;
 		if (ch != septoken && ch != endtoken)
 		{
-			throw JSONInvalid("Parse error at %d. Expecting %c but found  %c", strm.tellg(), endtoken, ch);
+			throw Invalid(L"Parse error at %d. Expecting %c but found  %c", strm.tellg(), endtoken, ch);
 		}
 		strm >> std::ws;
 		if (ch == endtoken) break;
 
 	}
 }
-JSONArray::JSONArray(const std::initializer_list< std::shared_ptr<JSONValue>>& il)
+JSON::Array::Array(const std::initializer_list< std::shared_ptr<Value>>& il)
 {
-	value_type = JSONValue::VALUE_TYPE::ARRAY;
+	value_type = Value::VALUE_TYPE::ARRAY;
 	m_value = std::shared_ptr<VALUE_TYPE>(new VALUE_TYPE());
 	for (auto& elem : il)
 	{
@@ -41,16 +41,16 @@ JSONArray::JSONArray(const std::initializer_list< std::shared_ptr<JSONValue>>& i
 	}
 
 }
-//JSONValue& JSONArray::get() const
+//Value& Array::get() const
 //{
 //	return *m_value;
 //}
-//JSONValue& JSONArray::set(const JSONValue& jv)
+//Value& Array::set(const Value& jv)
 //{
 //	m_value = jv.m_value;
 //	return *m_value;
 //}
-void JSONArray::insert(const std::initializer_list<std::shared_ptr<JSONValue>>& il)
+void JSON::Array::insert(const std::initializer_list<std::shared_ptr<Value>>& il)
 {
 
 	for (auto& elem : il)
@@ -58,47 +58,47 @@ void JSONArray::insert(const std::initializer_list<std::shared_ptr<JSONValue>>& 
 		m_value->push_back(elem);
 	}
 }
-void JSONArray::remove(const std::initializer_list<size_t >& il)
+void JSON::Array::remove(const std::initializer_list<size_t >& il)
 {
 	for (auto& elem : il)
 	{
 		auto vi = m_value->begin();
-		std::advance(m_value->begin(), elem);
+		std::advance(vi, elem);
 		m_value->erase(vi);
 	}
 }
-void JSONArray::update(const std::initializer_list< std::pair < size_t, std::shared_ptr<JSONValue>> >& il)
+void JSON::Array::update(const std::initializer_list< std::pair < size_t, std::shared_ptr<Value>> >& il)
 {
 	for (auto& elem : il)
 	{
 		(*m_value)[elem.first] = elem.second;
 	}
 }
-const JSONValue& JSONArray::operator[](size_t index) const
+const JSON::Value& JSON::Array::operator[](size_t index) const
 {
 	return *m_value->at(index);
 }
-bool JSONArray::operator == (const JSONValue& json)
+bool JSON::Array::operator == (const Value& json)
 {
 	return std::equal(
 		m_value->begin(), m_value->end(),
-		dynamic_cast<const JSONArray &>(json).m_value->begin(),
+		dynamic_cast<const Array &>(json).m_value->begin(),
 		[](const VALUE_TYPE::value_type& lhs, const VALUE_TYPE::value_type& rhs) -> bool
 	{
 		return *lhs == *rhs;
 	});
 }
-std::stringstream& JSONArray::print(std::stringstream& ss, size_t depth)
+std::wstringstream& JSON::Array::print(std::wstringstream& ss, size_t depth)
 {
-	ss << std::endl << std::string(depth, ' ');
-	ss << "[" << std::endl << std::string(depth, ' ');
+	ss << std::endl << std::wstring(depth, ' ');
+	ss << "[" << std::endl << std::wstring(depth, ' ');
 
 
 	for (auto it = m_value->begin(); it != m_value->end(); it++)
 	{
 
 		(*it)->print(ss, depth + 4);
-		ss << "," << std::endl << std::string(depth, ' ');
+		ss << "," << std::endl << std::wstring(depth, ' ');
 
 	}
 	ss << "]";

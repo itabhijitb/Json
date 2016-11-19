@@ -16,116 +16,117 @@
 #include "JSONException.h"
 
 
+namespace JSON {
+	class Value
+	{
 
-class JSONValue
-{
-	
-public:
-	enum class VALUE_TYPE {OBJECT, ARRAY, STRING, NUMBER, TRUE, FALSE, NONE} value_type;
-	
-	JSONValue() {};
-	virtual bool operator == (const JSONValue& json) = 0;
-	friend std::ostream& operator<<(std::ostream& os, const JSONValue& json);
-	virtual std::stringstream& print(std::stringstream& ss, size_t depth) = 0;
-protected:
+	public:
+		enum class VALUE_TYPE { OBJECT, ARRAY, STRING, NUMBER, TRUE, FALSE, NONE } value_type;
 
-};
-enum class JSONLIT {NONE = -1, FALSE, TRUE};
-template <JSONLIT lit> class JSONLiteral : public JSONValue {};
-template <> class JSONLiteral <JSONLIT::FALSE> : public JSONValue
-{
-public:
-	JSONLiteral()
+		Value() {};
+		virtual bool operator == (const Value& json) = 0;
+		friend std::wostream& operator<<(std::wostream& os, const Value& json);
+		virtual std::wstringstream& print(std::wstringstream& ss, size_t depth) = 0;
+	protected:
+
+	};
+	enum class JSONLIT { NONE = -1, FALSE, TRUE };
+	template <JSONLIT lit> class JSONLiteral : public Value {};
+	template <> class JSONLiteral <JSONLIT::FALSE> : public Value
 	{
-		value_type = VALUE_TYPE::FALSE;
-	}
-	operator JSONLIT()
-	{
-		return JSONLIT::FALSE;
-	}
-	virtual bool operator == (const JSONValue& json)
-	{
-		try
+	public:
+		JSONLiteral()
 		{
-			dynamic_cast<const JSONLiteral<JSONLIT::FALSE> &>(json);
+			value_type = VALUE_TYPE::FALSE;
 		}
-		catch (const std::bad_cast&)
+		operator JSONLIT()
 		{
-			return false;
+			return JSONLIT::FALSE;
 		}
-		return true;
-	}
-	std::stringstream& print(std::stringstream& ss, size_t depth)
-	{
-		ss << "False";
-		return ss;
-	}
-private:
-	JSONLiteral& operator=(const JSONLiteral&) = delete;
-	JSONLiteral(const JSONLiteral&) = delete;
-};
-template <> class JSONLiteral <JSONLIT::TRUE> : public JSONValue
-{
-public:
-	JSONLiteral()
-	{
-		value_type = VALUE_TYPE::TRUE;
-	}
-	operator JSONLIT()
-	{
-		return JSONLIT::TRUE;
-	}
-	virtual bool operator == (const JSONValue& json)
-	{
-		try
+		virtual bool operator == (const Value& json)
 		{
-			dynamic_cast<const JSONLiteral<JSONLIT::TRUE> &>(json);
+			try
+			{
+				dynamic_cast<const JSONLiteral<JSONLIT::FALSE> &>(json);
+			}
+			catch (const std::bad_cast&)
+			{
+				return false;
+			}
+			return true;
 		}
-		catch (const std::bad_cast&)
+		std::wstringstream& print(std::wstringstream& ss, size_t)
 		{
-			return false;
+			ss << "False";
+			return ss;
 		}
-		return true;
-	}
-	std::stringstream& print(std::stringstream& ss, size_t depth)
+	private:
+		JSONLiteral& operator=(const JSONLiteral&) = delete;
+		JSONLiteral(const JSONLiteral&) = delete;
+	};
+	template <> class JSONLiteral <JSONLIT::TRUE> : public Value
 	{
-		ss << "True";
-		return ss;
-	}
-private:
-	JSONLiteral& operator=(const JSONLiteral&) = delete;
-	JSONLiteral(const JSONLiteral&) = delete;
-};
-template <> class JSONLiteral <JSONLIT::NONE> : public JSONValue
-{
-public:
-	JSONLiteral()
-	{
-		value_type = VALUE_TYPE::NONE;
-	}
-	operator JSONLIT()
-	{
-		return JSONLIT::NONE;
-	}
-	virtual bool operator == (const JSONValue& json)
-	{
-		try
+	public:
+		JSONLiteral()
 		{
-			dynamic_cast<const JSONLiteral<JSONLIT::NONE> &>(json);
+			value_type = VALUE_TYPE::TRUE;
 		}
-		catch (const std::bad_cast&)
+		operator JSONLIT()
 		{
-			return false;
+			return JSONLIT::TRUE;
 		}
-		return true;
-	}
-	std::stringstream& print(std::stringstream& ss, size_t depth)
+		virtual bool operator == (const Value& json)
+		{
+			try
+			{
+				dynamic_cast<const JSONLiteral<JSONLIT::TRUE> &>(json);
+			}
+			catch (const std::bad_cast&)
+			{
+				return false;
+			}
+			return true;
+		}
+		std::wstringstream& print(std::wstringstream& ss, size_t)
+		{
+			ss << "True";
+			return ss;
+		}
+	private:
+		JSONLiteral& operator=(const JSONLiteral&) = delete;
+		JSONLiteral(const JSONLiteral&) = delete;
+	};
+	template <> class JSONLiteral <JSONLIT::NONE> : public Value
 	{
-		ss << "NONE";
-		return ss;
-	}
-private:
-	JSONLiteral& operator=(const JSONLiteral&) = delete;
-	JSONLiteral(const JSONLiteral&) = delete;
-};
+	public:
+		JSONLiteral()
+		{
+			value_type = VALUE_TYPE::NONE;
+		}
+		operator JSONLIT()
+		{
+			return JSONLIT::NONE;
+		}
+		virtual bool operator == (const Value& json)
+		{
+			try
+			{
+				dynamic_cast<const JSONLiteral<JSONLIT::NONE> &>(json);
+			}
+			catch (const std::bad_cast&)
+			{
+				return false;
+			}
+			return true;
+		}
+		std::wstringstream& print(std::wstringstream& ss, size_t)
+		{
+			ss << "NONE";
+			return ss;
+		}
+	private:
+		JSONLiteral& operator=(const JSONLiteral&) = delete;
+		JSONLiteral(const JSONLiteral&) = delete;
+	};
+}
 #endif

@@ -1,36 +1,37 @@
 #include "json.h"
-JSONString::JSONString()
+
+JSON::String::String()
 {
-	value_type = JSONValue::VALUE_TYPE::STRING;
+	value_type = Value::VALUE_TYPE::STRING;
 	m_value = std::make_unique<VALUE_TYPE>();
 }
-JSONString::JSONString(std::stringstream& strm)
+JSON::String::String(std::wstringstream& strm)
 {
-	value_type = JSONValue::VALUE_TYPE::STRING;
+	value_type = Value::VALUE_TYPE::STRING;
 	m_value = std::make_unique<VALUE_TYPE>();
 	strm >> std::ws;
-	char ch;
+	wchar_t ch;
 	strm >> ch;
 	if (ch != starttoken)
 	{
-		throw JSONPgmErr("JSON Stream at %d is %c, %c expected.", strm.tellg(), ch, endtoken);
+		throw PgmErr(L"JSON Stream at %d is %c, %c expected.", strm.tellg(), ch, endtoken);
 	}
-	std::getline(strm, *m_value, '"');
+	std::getline(strm, *m_value, L'"');
 }
-JSONString::JSONString(JSONString&& js)
+JSON::String::String(String&& js)
 {
 	m_value = std::move(js.m_value);
 }
-bool JSONString::operator == (const JSONValue& json)
+bool JSON::String::operator == (const Value& json)
 {
-	return m_value == (dynamic_cast<const JSONString &>(json)).m_value;
+	return m_value == (dynamic_cast<const String &>(json)).m_value;
 }
-std::stringstream& JSONString::print(std::stringstream& ss, size_t depth)
+std::wstringstream& JSON::String::print(std::wstringstream& ss, size_t )
 {
 	ss << '"' << *m_value << '"';
 	return ss;
 }
-JSONString::operator std::string()
+JSON::String::operator std::wstring()
 {
 	return *m_value;
 }

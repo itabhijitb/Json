@@ -12,98 +12,99 @@
 *                                JSON Libraries                                *
 *******************************************************************************/
 #include "Util.h"
+namespace JSON {
+	struct Exception : std::exception
+	{
+		virtual operator std::wstring() const
+		{
+			return L"Unknown JSON Exception";
+		}
+	};
+	struct TypeError : Exception
+	{
+		TypeError(const wchar_t *  msg, ...)
+		{
+			va_list args;
+			va_start(args, msg);
+			std::unique_ptr<wchar_t[]> buffer = nullptr;
+			size_t sz = vswprintf(buffer.get(), 0, msg, args);
+			buffer = std::make_unique<wchar_t[]>(sz + 1);
+			vswprintf(buffer.get(), sz, msg, args);
+			errmsg = buffer.get();
+			va_end(args);
+		}
+		virtual operator std::wstring() const
+		{
+			std::wstringstream ss;
+			ss << L"JSON Type Error: " << errmsg;
+			return ss.str();
+		}
+		std::wstring errmsg;
+	};
+	struct Invalid : Exception
+	{
+		Invalid(const wchar_t *  msg, ...)
+		{
+			va_list args;
+			va_start(args, msg);
+			std::unique_ptr<wchar_t[]> buffer = nullptr;
+			size_t sz = vswprintf(buffer.get(), 0, msg, args);
+			buffer = std::make_unique<wchar_t[]>(sz + 1);
+			vswprintf(buffer.get(), sz, msg, args);
+			errmsg = buffer.get();
+			va_end(args);
+		}
+		virtual operator std::wstring() const
+		{
+			std::wstringstream ss;
+			ss << "Invalid JSON: " << errmsg;
+			return ss.str();
+		}
+		std::wstring errmsg;
+	};
+	struct PgmErr : Exception
+	{
+		PgmErr(const wchar_t *  msg, ...)
+		{
+			va_list args;
+			va_start(args, msg);
+			std::unique_ptr<wchar_t[]> buffer = nullptr;
+			size_t sz = vswprintf(buffer.get(), 0, msg, args);
+			buffer = std::make_unique<wchar_t[]>(sz + 1);
 
-struct JSONException : std::exception
-{
-	virtual operator std::string() const
+			vswprintf(buffer.get(), sz, msg, args);
+			errmsg = buffer.get();
+			va_end(args);
+		}
+		virtual operator std::wstring() const
+		{
+			std::wstringstream ss;
+			ss << "Program Error: " << errmsg;
+			return ss.str();
+		}
+		std::wstring errmsg;
+	};
+	struct RangeError : Exception
 	{
-		return "Unknown JSON Exception";
-	}
-};
-struct JSONTypeError : JSONException
-{
-	JSONTypeError(const char *  msg, ...)
-	{
-		va_list args;
-		va_start(args, msg);
-		std::unique_ptr<char[]> buffer = nullptr;
-		size_t sz = vsnprintf(buffer.get(), 0, msg, args);
-		buffer = std::make_unique<char[]>(sz + 1);
-		vsnprintf(buffer.get(), sz, msg, args);
-		errmsg = buffer.get();
-		va_end(args);
-	}
-	virtual operator std::string() const
-	{
-		std::stringstream ss;
-		ss << "JSON Type Error: " << errmsg;
-		return ss.str();
-	}
-	std::string errmsg;
-};
-struct JSONInvalid : JSONException
-{
-	JSONInvalid(const char *  msg, ...)
-	{
-		va_list args;
-		va_start(args, msg);
-		std::unique_ptr<char[]> buffer = nullptr;
-		size_t sz = vsnprintf(buffer.get(), 0, msg, args);
-		buffer = std::make_unique<char[]>(sz + 1);
-		vsnprintf(buffer.get(), sz, msg, args);
-		errmsg = buffer.get();
-		va_end(args);
-	}
-	virtual operator std::string() const
-	{
-		std::stringstream ss;
-		ss << "Invalid JSON: " << errmsg;
-		return ss.str();
-	}
-	std::string errmsg;
-};
-struct JSONPgmErr : JSONException
-{
-	JSONPgmErr(const char *  msg, ...)
-	{
-		va_list args;
-		va_start(args, msg);
-		std::unique_ptr<char[]> buffer = nullptr;
-		size_t sz = vsnprintf(buffer.get(), 0, msg, args);
-		buffer = std::make_unique<char[]>(sz + 1);
-		
-		vsnprintf(buffer.get(), sz, msg, args);
-		errmsg = buffer.get();
-		va_end(args);
-	}
-	virtual operator std::string() const
-	{
-		std::stringstream ss;
-		ss << "Program Error: " << errmsg;
-		return ss.str();
-	}
-	std::string errmsg;
-};
-struct JSONRangeError : JSONException
-{
-	JSONRangeError(const char *  msg, ...)
-	{
-		va_list args;
-		va_start(args, msg);
-		std::unique_ptr<char[]> buffer = nullptr;
-		size_t sz = vsnprintf(buffer.get(), 0, msg, args);
-		buffer = std::make_unique<char[]>(sz + 1);
+		RangeError(const wchar_t *  msg, ...)
+		{
+			va_list args;
+			va_start(args, msg);
+			std::unique_ptr<wchar_t[]> buffer = nullptr;
+			size_t sz = vswprintf(buffer.get(), 0, msg, args);
+			buffer = std::make_unique<wchar_t[]>(sz + 1);
 
-		vsnprintf(buffer.get(), sz, msg, args);
-		errmsg = buffer.get();
-		va_end(args);
-	}
-	virtual operator std::string() const
-	{
-		std::stringstream ss;
-		ss << "Out of Range Error: " << errmsg;
-		return ss.str();
-	}
-	std::string errmsg;
-};
+			vswprintf(buffer.get(), sz, msg, args);
+			errmsg = buffer.get();
+			va_end(args);
+		}
+		virtual operator std::wstring() const
+		{
+			std::wstringstream ss;
+			ss << L"Out of Range Error: " << errmsg;
+			return ss.str();
+		}
+		std::wstring errmsg;
+	};
+}
 #endif
