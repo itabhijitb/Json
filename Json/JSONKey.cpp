@@ -112,7 +112,7 @@ void JSONKey::insert(const std::initializer_list<JSON > & il)
 		(*std::dynamic_pointer_cast<JSONArray>(m_jsonroot)->m_value).push_back(item.m_root);
 	}
 }
-bool JSONKey::remove(std::string key)
+std::size_t JSONKey::remove(std::string key)
 {
 	m_json->processkeys(*this, nullptr);
 	if (m_jsonroot->value_type != JSONValue::VALUE_TYPE::OBJECT)
