@@ -185,7 +185,7 @@ JSONKey& JSON::operator[](size_t index)
 	return (*m_pkeys)[index];
 }
 
-bool JSON::remove(std::string key)
+std::size_t JSON::remove(std::string key)
 {
 	return (*std::dynamic_pointer_cast<JSONObject>(m_root)->m_value).erase(key);
 }
