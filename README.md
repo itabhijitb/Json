@@ -15,8 +15,31 @@ The current implementation uses templates and recursive pattern and polymorphism
 ## Design Pattern
 
 
-Intuitive syntax. JSON and JSON elements gives a feeling of first class data.  
+Intuitive syntax. JSON and JSON elements gives a feeling of first class data. Using Dynamic Polymorphism and making each element a friend of others, it gives an intuitive recursive pattern.
 
-Trivial integration. Our whole code consists of a single header file json.hpp. That's it. No library, no subproject, no dependencies, no complex build system. The class is written in vanilla C++11. All in all, everything should require no adjustment of your compiler flags or project settings.
+Trivial integration. The entire codebase is contained in a single module JSON under the namespace JSON. We have refrained from monolithic design as we want the code to be readable and maintainable. 
 
-Serious testing. Our class is heavily unit-tested and covers 100% of the code, including all exceptional behavior. Furthermore, we checked with Valgrind that there are no memory leaks. To maintain high quality, the project is following the Core Infrastructure Initiative (CII) best practices.
+Contextual Error Handling. In case the Parser fails to parse the JSON Stream, it would spit out the location where an invalid token was found with a best guess on the missing token.
+
+## Examples
+
+### Parsing JSON
+
+JSON accepts the JSON as a stream. It parses and creates a recursive polymorphic structure. 
+```CPP
+std::wstringstream json1(L"{\n\"abc\": 12,\n \t\"sub1\":{\n    \t\t\"a\": 20, \n   \t\t \"b\" : 25\n}, \n\"xyz\" : 25, \n\"ccc\" : [\"hello\", \"hello2\", \"hello3\"]\n}");
+		std::wstringstream json2(L"{\n\"abc\":12,\n \t\"sub1\":{\n    \t\t\"b\": 20, \n   \t\t \"a\" : 20\n}, \n\"xyz\" : 25, \n\"ccc\" : [\"hello\", \"hello2\", \"hello3\"]\n}");
+		try
+		{
+			JSON::JSON jsonify1 = JSON::JSON(json1);
+			std::wcout << jsonify1 << std::endl;
+			JSON::JSON jsonify2 = JSON::JSON(json2);
+			std::wcout << jsonify1 << std::endl;
+			std::cout << (jsonify1 == jsonify2) << std::endl;
+
+		}
+		catch (JSON::Exception& je)
+		{
+			std::wcout << std::wstring(je) << std::endl;
+		}
+```
