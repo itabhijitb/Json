@@ -28,7 +28,7 @@ namespace JSON {
 	class Object;
 	class Array;
 	class String;
-	const char* ValueName(Value::VALUE_TYPE type);
+	const wchar_t* ValueName(Value::VALUE_TYPE type);
 	/**
 	*  JSON class. A factory class to generate a nested recursive structure of
 				   JSON Values.

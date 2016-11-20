@@ -8,8 +8,8 @@
 namespace JSON {
 	class String : public Value
 	{
-		static const char starttoken = '"';
-		static const char endtoken = '"';
+		static const wchar_t starttoken = L'"';
+		static const wchar_t endtoken = L'"';
 		typedef std::wstring VALUE_TYPE;
 	public:
 		friend class JSON;

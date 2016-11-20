@@ -15,9 +15,9 @@
 namespace JSON {
 	class Array : public Value
 	{
-		static const char starttoken = '[';
-		static const char endtoken = ']';
-		static const char septoken = ',';
+		static const wchar_t starttoken = L'[';
+		static const wchar_t endtoken = L']';
+		static const wchar_t septoken = L',';
 		typedef  std::vector<std::shared_ptr<Value> > VALUE_TYPE;
 		typedef VALUE_TYPE::iterator iterator;
 		typedef VALUE_TYPE::const_iterator const_iterator;

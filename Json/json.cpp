@@ -1,17 +1,17 @@
 #include "json.h"
-const char* JSON::ValueName(Value::VALUE_TYPE type)
+const wchar_t* JSON::ValueName(Value::VALUE_TYPE type)
 {
 	switch (type)
 	{
-	case Value::VALUE_TYPE::OBJECT: return "Object";
-	case Value::VALUE_TYPE::ARRAY: return "Array";
-	case Value::VALUE_TYPE::STRING: return "String";
-	case Value::VALUE_TYPE::NUMBER: return "Number";
+	case Value::VALUE_TYPE::OBJECT: return L"Object";
+	case Value::VALUE_TYPE::ARRAY: return L"Array";
+	case Value::VALUE_TYPE::STRING: return L"String";
+	case Value::VALUE_TYPE::NUMBER: return L"Number";
 	case Value::VALUE_TYPE::TRUE:
 	case Value::VALUE_TYPE::FALSE:
 	case Value::VALUE_TYPE::NONE:
 	default:
-		return "Literal";
+		return L"Literal";
 	}
 }
 std::shared_ptr<JSON::Value> JSON::JSON::Parse(std::wstringstream& strm)
@@ -85,6 +85,7 @@ JSON::JSON::JSON(EMPTY json)
 		break;
 	}
 }
+
 JSON::JSON::JSON(const std::initializer_list<std::pair<const std::wstring, JSON > > &  il) : m_root(nullptr)
 {
 	
